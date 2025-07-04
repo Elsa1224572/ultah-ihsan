@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HBD Isann</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Background bintang */
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 2s infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.2; }
+      100% { opacity: 0.8; }
+    }
+
+    .firework {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: yellow;
+      border-radius: 50%;
+      animation: explode 0.8s ease-out forwards;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    @keyframes explode {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    .text {
+      position: relative;
+      display: flex;
+      gap: 0.4rem;
+      font-size: 3rem;
+      margin-bottom: 40px;
+    }
+
+    .letter {
+      opacity: 0;
+      position: relative;
+      transition: transform 0.3s ease-out, opacity 2s ease-out;
+      animation: flicker 2s infinite;
+      cursor: default;
+      user-select: none;
+    }
+
+    @keyframes flicker {
+      0%, 100% {
+        text-shadow:
+          0 0 5px #ff4c4c,
+          0 0 10px #ff4c4c,
+          0 0 15px #ff4c4c,
+          0 0 20px #ffd700,
+          0 0 30px #ffd700,
+          0 0 40px #ffd700;
+      }
+      50% {
+        text-shadow:
+          0 0 10px #ff69b4,
+          0 0 20px #ff69b4,
+          0 0 30px #4ccfff,
+          0 0 40px #4ccfff,
+          0 0 50px #4ccfff,
+          0 0 60px #b84cff;
+      }
+    }
+
+    /* Bounce saat huruf muncul */
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      50% {
+        opacity: 1;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .letter.show {
+      animation: bounceIn 0.6s forwards;
+    }
+
+    /* Efek hover huruf: bergetar dan berubah warna */
+    .letter:hover {
+      animation: shake 0.5s infinite;
+      color: #ff69b4 !important;
+      text-shadow:
+        0 0 10px #ff69b4,
+        0 0 20px #ff69b4,
+        0 0 30px #ff69b4;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(2px, 1px) rotate(1deg); }
+      50% { transform: translate(-2px, -1px) rotate(-1deg); }
+      75% { transform: translate(2px, -1px) rotate(1deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    .balloon {
+      animation: floatUp 3s forwards;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-200px); opacity: 0; }
+    }
+
+    /* AREA KALIMAT BARU */
+
+    #newMessageWrapper {
+      position: relative;
+      background: linear-gradient(270deg, #1a1a1a, #004466, #1a1a1a);
+      background-size: 600% 600%;
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #4ccfff;
+      animation: backgroundShift 15s ease infinite;
+      user-select: none;
+      max-width: 90vw;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    @keyframes backgroundShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    #newMessage {
+      font-size: 2rem;
+      color: #4ccfff;
+      text-shadow:
+        0 0 8px #4ccfff,
+        0 0 15px #4ccfff,
+        0 0 25px #1a9fff;
+      animation: neonPulse 3s ease-in-out infinite, breathe 4s ease-in-out infinite;
+      cursor: default;
+      flex-grow: 1;
+    }
+
+    @keyframes neonPulse {
+      0%, 100% {
+        text-shadow:
+          0 0 8px #4ccfff,
+          0 0 15px #4ccfff,
+          0 0 25px #1a9fff;
+      }
+      50% {
+        text-shadow:
+          0 0 15px #7ddcff,
+          0 0 30px #7ddcff,
+          0 0 45px #4ccfff;
+      }
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.75; }
+    }
+
+    /* Hover efek scale dan ganti warna */
+    #newMessageWrapper:hover #newMessage {
+      color: #ff69b4;
+      text-shadow:
+        0 0 15px #ff69b4,
+        0 0 30px #ff69b4,
+        0 0 45px #ff69b4;
+      transform: scale(1.05);
+      transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    /* Emoji Animasi */
+    .emoji {
+      font-size: 2.5rem;
+      animation: floatUpDown 4s ease-in-out infinite;
+      user-select: none;
+    }
+
+    .emoji:nth-child(1) { animation-delay: 0s; }
+    .emoji:nth-child(2) { animation-delay: 1s; }
+    .emoji:nth-child(3) { animation-delay: 2s; }
+    .emoji:nth-child(4) { animation-delay: 3s; }
+
+    @keyframes floatUpDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    /* Countdown styling */
+    #countdown {
+      font-size: 4rem;
+      color: #ffcc00;
+      text-shadow: 0 0 15px #ffcc00;
+      margin-bottom: 20px;
+      font-weight: bold;
+      user-select: none;
+      animation: pulseCountdown 1s infinite;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    @keyframes pulseCountdown {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="countdown"></div>
+<div class="text" id="text"></div>
+<div id="newMessageWrapper" style="opacity: 0;">
+  <div class="emoji">🎉</div>
+  <div id="newMessage"></div>
+  <div class="emoji">🎈</div>
+  <div class="emoji">🐟</div>
+  <div class="emoji">🐙</div>
+</div>
+
+<script>
+  const message = "HBD ISANN";
+  const colors = ["#FF4C4C", "#FFD700", "#4CFF4C", "#4CCFFF", "#B84CFF", "#FF8C00", "#00FA9A", "#FF69B4"];
+  const container = document.getElementById('text');
+  const newMsgWrapper = document.getElementById('newMessageWrapper');
+  const newMsg = document.getElementById('newMessage');
+  const countdownEl = document.getElementById('countdown');
+
+  // Generate bintang acak di background
+  const starCount = 100;
+  for (let i = 0; i < starCount; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 2 + 1;
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    star.style.top = Math.random() * window.innerHeight + 'px';
+    star.style.left = Math.random() * window.innerWidth + 'px';
+    star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    document.body.appendChild(star);
+  }
+
+  // Tampilkan pesan awal dengan kembang api dan balon dengan efek bounce
+  message.split('').forEach((char, index) => {
+    const span = document.createElement('span');
+    span.className = 'letter';
+    span.textContent = char;
+    span.style.color = colors[index % colors.length];
+    container.appendChild(span);
+
+    setTimeout(() => {
+      const rect = span.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+
+      launchFirework(x, y);
+
+      // Tambah kelas show untuk animasi bounce
+      span.classList.add('show');
+    }, index * 400);
+  });
+
+  function launchFirework(x, y) {
+    for (let i = 0; i < 20; i++) {
+      const fw = document.createElement('div');
+      fw.className = 'firework';
+      fw.style.left = `${x}px`;
+      fw.style.top = `${y}px`;
+      fw.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+      document.body.appendChild(fw);
+      setTimeout(() => fw.remove(), 800);
+    }
+  }
+
+  // Ubah huruf jadi balon setelah pesan pertama tampil
+  setTimeout(() => {
+    const letters = document.querySelectorAll('.letter');
+    letters.forEach((letter, index) => {
+      setTimeout(() => {
+        letter.textContent = "🎈";
+        letter.classList.add('balloon');
+      }, index * 300);
+    });
+  }, 4000);
+
+  // Fungsi typing effect untuk kalimat baru
+  function typeText(element, text, delay = 80) {
+    element.textContent = '';
+    let i = 0;
+    const interval = setInterval(() => {
+      element.textContent += text.charAt(i);
+      i++;
+      if (i >= text.length) clearInterval(interval);
+    }, delay);
+  }
+
+  // Countdown sebelum munculkan kalimat baru
+  function startCountdown(seconds, callback) {
+    countdownEl.style.opacity = 1;
+    let current = seconds;
+    countdownEl.textContent = current;
+    const interval = setInterval(() => {
+      current--;
+      if (current <= 0) {
+        clearInterval(interval);
+        countdownEl.style.opacity = 0;
+        callback();
+      } else {
+        countdownEl.textContent = current;
+      }
+    }, 1000);
+  }
+
+  // Setelah balon muncul, jalankan countdown dan munculkan kalimat baru
+  setTimeout(() => {
+    startCountdown(3, () => {
+      container.style.opacity = 0; // sembunyikan kalimat awal
+      newMsgWrapper.style.opacity = 1; // tampilkan kalimat baru
+      typeText(newMsg, "UBUR UBUR IKAN LELE, DITUNGGU TRAKTIRANNYA LEE", 80);
+    });
+  }, 7000);
+
+</script>
+
+</body>
+</html>
